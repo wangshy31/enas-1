@@ -118,7 +118,8 @@ def get_train_ops(
   if l2_reg > 0:
     l2_losses = []
     for var in tf_variables:
-      l2_losses.append(tf.reduce_sum(var ** 2))
+      l2_losses.append(tf.reduce_sum(tf.abs(var)))
+      #l2_losses.append(tf.reduce_sum(var ** 2))
     l2_loss = tf.add_n(l2_losses)
     loss += l2_reg * l2_loss
 
@@ -150,7 +151,7 @@ def get_train_ops(
       grads = clipped
     else:
       raise NotImplementedError("Unknown clip_mode {}".format(clip_mode))
-  
+
   if lr_cosine:
     assert lr_max is not None, "Need lr_max to use lr_cosine"
     assert lr_min is not None, "Need lr_min to use lr_cosine"
