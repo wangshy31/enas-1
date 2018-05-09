@@ -8,7 +8,7 @@ python src/textcls/main.py \
   --reset_output_dir \
   --data_path="/ssd/ijcai18/data/agnews" \
   --num_words=96 \
-  --output_dir="textcls/agnews/add" \
+  --output_dir="textcls/agnews/maxout" \
   --batch_size=256 \
   --num_epochs=64 \
   --log_every=50 \
