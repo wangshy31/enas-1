@@ -6,7 +6,7 @@ python src/textcls/main.py \
   --data_format="NCHW" \
   --search_for="micro" \
   --reset_output_dir \
-  --data_path="/home/wangshiyao/Documents/workspace/ijcai18/data/agnews/" \
+  --data_path="/ssd/ijcai18/data/agnews" \
   --num_words=96 \
   --output_dir="textcls/agnews/add" \
   --batch_size=256 \

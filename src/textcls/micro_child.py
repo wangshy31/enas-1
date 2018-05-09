@@ -110,10 +110,10 @@ class MicroChild(Model):
       assert num_epochs is not None, "Need num_epochs to drop_path"
 
     #pool_distance = self.num_layers // 3
-    self.pool_layers = [2, 5, 8, 11, 13]
+    self.pool_layers = [1,3,5,7]
 
     if self.use_aux_heads:
-      self.aux_head_indices = [self.pool_layers[-1]]
+      self.aux_head_indices = [self.pool_layers[-1]-1]
 
   def _factorized_reduction(self, x, out_filters, stride, is_training):
     """Reduces the shape of x without information loss due to striding."""
@@ -199,7 +199,7 @@ class MicroChild(Model):
   def _apply_drop_path(self, x, layer_id):
     drop_path_keep_prob = self.drop_path_keep_prob
 
-    layer_ratio = float(layer_id + 1) / (self.num_layers + 2)
+    layer_ratio = float(layer_id + 1) / (self.num_layers + 4)
     drop_path_keep_prob = 1.0 - layer_ratio * (1.0 - drop_path_keep_prob)
 
     step_ratio = tf.to_float(self.global_step + 1) / tf.to_float(self.num_train_steps)
@@ -274,7 +274,7 @@ class MicroChild(Model):
 
       # building layers in the micro space
       out_filters = self.out_filters
-      for layer_id in range(self.num_layers + 5):
+      for layer_id in range(self.num_layers + 4):
         with tf.variable_scope("layer_{0}".format(layer_id)):
           if layer_id not in self.pool_layers:
             if self.fixed_arc is None:
@@ -332,7 +332,7 @@ class MicroChild(Model):
               aux_logits = global_avg_pool(aux_logits,
                                            data_format=self.data_format)
               inp_c = aux_logits.get_shape()[1].value
-              w = create_weight("w", [inp_c, 5])
+              w = create_weight("w", [inp_c, 4])
               aux_logits = tf.matmul(aux_logits, w)
               self.aux_logits = aux_logits
 
@@ -343,17 +343,17 @@ class MicroChild(Model):
           print("Aux head uses {0} params".format(self.num_aux_vars))
 
       x = tf.nn.relu(x)
-      #x = global_avg_pool(x, data_format=self.data_format)
+      x = global_avg_pool(x, data_format=self.data_format)
 
       if is_training and self.keep_prob is not None and self.keep_prob < 1.0:
         x = tf.nn.dropout(x, self.keep_prob)
       with tf.variable_scope("fc"):
         inp_c = self._get_C(x)
-        hw = self._get_HW(x)
-        w = create_weight("w", [inp_c*hw, 5])
-        x = tf.reshape(x, [-1, inp_c*hw])
-        #w = create_weight("w", [inp_c, 5])
-        #x = tf.reshape(x, [-1, inp_c])
+        #hw = self._get_HW(x)
+        #w = create_weight("w", [inp_c*hw, 5])
+        #x = tf.reshape(x, [-1, inp_c*hw])
+        w = create_weight("w", [inp_c, 4])
+        x = tf.reshape(x, [-1, inp_c])
         x = tf.matmul(x, w)
     return x
 
@@ -662,14 +662,14 @@ class MicroChild(Model):
           x_op = arc[4 * cell_id + 1]
           x = prev_layers[x_id, :, :, :, :]
           x = self._enas_cell(x, cell_id, x_id, x_op, out_filters)
-          x_used = tf.one_hot(x_id, depth=self.num_cells + 5, dtype=tf.int32)
+          x_used = tf.one_hot(x_id, depth=self.num_cells + 2, dtype=tf.int32)
 
         with tf.variable_scope("y"):
           y_id = arc[4 * cell_id + 2]
           y_op = arc[4 * cell_id + 3]
           y = prev_layers[y_id, :, :, :, :]
           y = self._enas_cell(y, cell_id, y_id, y_op, out_filters)
-          y_used = tf.one_hot(y_id, depth=self.num_cells + 5, dtype=tf.int32)
+          y_used = tf.one_hot(y_id, depth=self.num_cells + 2, dtype=tf.int32)
 
         out = x + y
         used.extend([x_used, y_used])
@@ -702,7 +702,7 @@ class MicroChild(Model):
       raise ValueError("Unknown data_format '{0}'".format(self.data_format))
 
     with tf.variable_scope("final_conv"):
-      w = create_weight("w", [self.num_cells + 5, out_filters * out_filters])
+      w = create_weight("w", [self.num_cells + 2, out_filters * out_filters])
       w = tf.gather(w, indices, axis=0)
       w = tf.reshape(w, [1, 1, num_outs * out_filters, out_filters])
       out = tf.nn.relu(out)

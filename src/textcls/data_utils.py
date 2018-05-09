@@ -6,7 +6,7 @@ import tensorflow as tf
 
 dim_embed = 300
 
-def _read_data(data_path, data_file, label_file, num_words = 320):
+def _read_data(data_path, data_file, label_file, num_words = 96):
   """Reads text format data.
 
   Returns:
@@ -38,7 +38,7 @@ def _read_data(data_path, data_file, label_file, num_words = 320):
   return text, labels
 
 
-def read_data(data_path, num_valids=50000):
+def read_data(data_path, num_valids=10000):
   print "-" * 80
   text, labels = {}, {}
   #read word dict
