@@ -110,10 +110,10 @@ class MicroChild(Model):
       assert num_epochs is not None, "Need num_epochs to drop_path"
 
     #pool_distance = self.num_layers // 3
-    self.pool_layers = [1, 3, 5, 7, 9]
+    self.pool_layers = [2, 5, 8, 11, 13]
 
     if self.use_aux_heads:
-      self.aux_head_indices = [self.pool_layers[-1]-1]
+      self.aux_head_indices = [self.pool_layers[-1]]
 
   def _factorized_reduction(self, x, out_filters, stride, is_training):
     """Reduces the shape of x without information loss due to striding."""
@@ -307,7 +307,7 @@ class MicroChild(Model):
           with tf.variable_scope("aux_head"):
             aux_logits = tf.nn.relu(x)
             aux_logits = tf.layers.average_pooling2d(
-              aux_logits, [10, 1], [3, 3], "VALID",
+              aux_logits, [5, 1], [3, 3], "VALID",
               data_format=self.actual_data_format)
             with tf.variable_scope("proj"):
               inp_c = self._get_C(aux_logits)

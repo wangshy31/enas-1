@@ -2,22 +2,8 @@
 
 export PYTHONPATH="$(pwd)"
 #released
-#fixed_arc="0 2 0 0 0 4 0 1 0 4 1 1 1 0 0 1 0 2 1 1"
-#fixed_arc="$fixed_arc 1 0 1 0 0 3 0 2 1 1 3 1 1 0 0 4 0 3 1 1"
-
-#reproduce
-#fixed_arc="0 1 0 1 0 2 0 4"
-#fixed_arc="$fixed_arc 1 0 1 1 2 2 0 1"
-#fixed_arc="1 0 1 2 0 1 1 3"
-#fixed_arc="$fixed_arc 1 1 1 3 1 3 1 2"
-#fixed_arc="1 1 0 3 0 1 1 0"
-#fixed_arc="$fixed_arc 1 4 1 1 1 2 1 4"
-#fixed_arc="0 2 0 1"
-#fixed_arc="$fixed_arc 1 0 0 0"
-#fixed_arc="1 1 0 0 0 0 1 3 0 3 1 3"
-#fixed_arc="$fixed_arc 1 1 1 2 0 4 1 0 1 4 1 0"
-fixed_arc="0 1 1 3 1 4 1 0 1 3 1 0"
-fixed_arc="$fixed_arc 1 1 1 4 2 2 1 1 0 2 1 2"
+fixed_arc="0 2 0 2 0 2 0 3 1 2 0 2"
+fixed_arc="$fixed_arc 1 1 0 1 1 2 1 1 0 0 0 3"
 #fixed_arc="0 2 0 2 0 2 0 3 1 2 0 2 1"
 #fixed_arc="$fixed_arc 1 0 1 1 2 1 1 0 0 0 3"
 python src/textcls/main.py \
@@ -25,14 +11,14 @@ python src/textcls/main.py \
   --search_for="micro" \
   --reset_output_dir \
   --data_path="/ssd/ijcai18/data/yelp_f/" \
-  --output_dir="textcls/yelp_f/test/top2" \
+  --output_dir="textcls/yelp_f/test/ag_deep" \
   --batch_size=256 \
-  --num_epochs=30 \
+  --num_epochs=72 \
   --log_every=50 \
   --eval_every_epochs=1 \
   --child_use_aux_heads \
   --child_fixed_arc="${fixed_arc}" \
-  --child_num_layers=5 \
+  --child_num_layers=10 \
   --child_out_filters=64 \
   --child_num_branches=5 \
   --child_num_cells=3 \
@@ -41,7 +27,7 @@ python src/textcls/main.py \
   --child_l2_reg=1e-4 \
   --child_lr_cosine \
   --child_lr_max=0.05 \
-  --child_lr_min=0.00005 \
+  --child_lr_min=0.0005 \
   --child_lr_T_0=10 \
   --child_lr_T_mul=2 \
   --nocontroller_training \
