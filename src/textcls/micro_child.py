@@ -277,7 +277,7 @@ class MicroChild(Model):
       for layer_id in range(self.num_layers + 4):
         with tf.variable_scope("layer_{0}".format(layer_id)):
           if layer_id not in self.pool_layers:
-            if self.fixed_arc is None:
+            if True : #self.fixed_arc is None:
               x = self._enas_layer(
                 layer_id, layers, self.normal_arc, out_filters)
             else:
@@ -286,7 +286,7 @@ class MicroChild(Model):
                 normal_or_reduction_cell="normal")
           else:
             out_filters *= 1
-            if self.fixed_arc is None:
+            if True:#self.fixed_arc is None:
               x = self._factorized_reduction(x, out_filters, 2, is_training)
               layers = [layers[-1], x]
               x = self._enas_layer(

@@ -2,6 +2,8 @@
 
 export PYTHONPATH="$(pwd)"
 
+fixed_arc="0 3 1 2 0 2 0 0 0 2 1 3"
+fixed_arc="$fixed_arc 1 4 1 3 1 3 1 4 1 1 3 3"
 python src/textcls/main.py \
   --data_format="NCHW" \
   --search_for="micro" \
@@ -14,6 +16,7 @@ python src/textcls/main.py \
   --log_every=50 \
   --eval_every_epochs=1 \
   --child_use_aux_heads \
+  --child_fixed_arc="${fixed_arc}" \
   --child_num_layers=4 \
   --child_out_filters=16 \
   --child_l2_reg=1e-4 \
@@ -26,7 +29,7 @@ python src/textcls/main.py \
   --child_lr_min=0.0005 \
   --child_lr_T_0=10 \
   --child_lr_T_mul=2 \
-  --controller_training \
+  --child_fixed_arc="${fixed_arc}" \
   --controller_search_whole_channels \
   --controller_entropy_weight=0.0001 \
   --controller_train_every=1 \
