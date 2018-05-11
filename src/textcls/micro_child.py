@@ -529,9 +529,9 @@ class MicroChild(Model):
             y = self._apply_drop_path(y, layer_id)
 
 
-        concat_xy = tf.concat(values=[x, y], axis=3)
-        out = tf.contrib.layers.maxout(concat_xy, num_units=1, axis = -1)
-        #out = x + y
+        #concat_xy = tf.concat(values=[x, y], axis=3)
+        #out = tf.contrib.layers.maxout(concat_xy, num_units=1, axis = -1)
+        out = x + y
         layers.append(out)
     out = self._fixed_combine(layers, used, out_filters, is_training,
                               normal_or_reduction_cell)
@@ -674,9 +674,9 @@ class MicroChild(Model):
           y = self._enas_cell(y, cell_id, y_id, y_op, out_filters)
           y_used = tf.one_hot(y_id, depth=self.num_cells + 2, dtype=tf.int32)
 
-        concat_xy = tf.concat(values=[x, y], axis=3)
-        out = tf.contrib.layers.maxout(concat_xy, num_units=1, axis = -1)
-        #out = x + y
+        #concat_xy = tf.concat(values=[x, y], axis=3)
+        #out = tf.contrib.layers.maxout(concat_xy, num_units=1, axis = -1)
+        out = x + y
         used.extend([x_used, y_used])
         layers.append(out)
 
