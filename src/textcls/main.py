@@ -276,6 +276,7 @@ def train():
                 tr_acc, FLAGS.batch_size)
             log_string += " mins={:<10.2f}".format(
                 float(curr_time - start_time) / 60)
+            ops["eval_func"](sess, "test")
 
             print(log_string)
 
